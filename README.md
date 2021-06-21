@@ -96,7 +96,7 @@ var payload = {
         "signature": "signature"
     }
 }
-hyperSDKRef.process(JSON.stringify(completePayload), hyperSDKCallback);
+hyperSDKRef.process(JSON.stringify(completePayload));
 ```
 
 ## TODO
