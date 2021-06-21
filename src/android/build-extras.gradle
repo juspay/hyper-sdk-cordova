@@ -1,0 +1,16 @@
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven {
+          url "https://maven.juspay.in/jp-build-packages/hyper-sdk/"
+        }
+    }
+}
+
+dependencies {
+  def hyperSDKVersion = "2.0.2-rc.82"
+  implementation "in.juspay:hypersdk:$hyperSDKVersion"
+}
+
+ext.cdvCompileSdkVersion = 29

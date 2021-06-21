@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="hyper-sdk-plugin" version="2.0.0"
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Base : Start -->
+    <name>HyperSDKPlugin</name>
+    <description>A Cordova plugin for the HyperSDK</description>
+    <author>Juspay Technologies PVT LTD</author>
+    <keywords>hypersdk,payments,juspay</keywords>
+    <license>Apache 2.0 License</license>
+    <!-- Base : End -->
+    
+    <!-- Supported Platform : Start -->
+    <engines>
+        <engine name="cordova" version=">=7.0.0" />
+        <engine name="cordova-android" version=">=6.3.0" />
+        <engine name="cordova-ios" version=">=4.3.0" />
+    </engines>
+    <!-- Supported Platform : End -->
+    
+    <js-module name="HyperSDKPlugin" src="www/hypersdk.js">
+        <clobbers target="cordova.plugins.HyperSDKPlugin" />
+    </js-module>
+    
+    <platform name="android">
+        <config-file parent="/*" target="config.xml">
+            <feature name="HyperSDKPlugin">
+                <param name="android-package" value="in.juspay.hypersdk.HyperSDKPlugin" />
+            </feature>
+        </config-file>
+        <config-file parent="/manifest" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.READ_SMS" />
+            <uses-permission android:name="android.permission.RECEIVE_SMS" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+        </config-file>
+        <source-file src="src/android/HyperSDKPlugin.java" target-dir="src/in/juspay/hypersdk" />
+        <framework custom="true" src="src/android/build-extras.gradle" type="gradleReference"/>
+    </platform>
+    
+    <platform name="ios">
+        <config-file target="*-Info.plist" parent="LSApplicationQueriesSchemes">
+            <array>
+                <string>credpay</string>
+                <string>phonepe</string>
+                <string>paytmmp</string>
+                <string>tez</string>
+                <string>paytm</string>
+                <string>devtools</string>
+            </array>
+        </config-file>
+	
+        <config-file parent="/*" target="config.xml">
+            <feature name="HyperSDKPlugin">
+                <param name="ios-package" value="HyperSDKPlugin" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/HyperSDKPlugin.m" />
+        <podspec>
+            <config>
+                <source url="https://github.com/CocoaPods/Specs.git"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="HyperSDK" spec="2.0.49" />
+            </pods>
+        </podspec>
+    </platform>
+</plugin>
