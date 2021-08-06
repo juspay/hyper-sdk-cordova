@@ -102,4 +102,3 @@ hyperSDKRef.process(JSON.stringify(completePayload));
 ## TODO
 1. Activity result handling is pending - Code added, Not tested
 1. Add dynamic assets plugin for android and ios
-1. QA
