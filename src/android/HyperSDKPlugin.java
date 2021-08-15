@@ -167,9 +167,9 @@ public class HyperSDKPlugin extends CordovaPlugin {
             JSONObject params = new JSONObject(String.valueOf(args.get(0)));
             Log.d(LOG_TAG,params.toString());
             HyperServices.preFetch(cordova.getActivity().getApplicationContext(), params);
-            this.cordovaCallBack.success("success");
+            sendJSCallback(PluginResult.Status.OK, "success");
         } catch (Exception e){
-            this.cordovaCallBack.success(e.getMessage());
+            sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
         }
     }
 
@@ -200,17 +200,24 @@ public class HyperSDKPlugin extends CordovaPlugin {
                 this.hyperServices.initiate(params, new HyperPaymentsCallbackAdapter() {
                     @Override
                     public void onEvent(JSONObject data, JuspayResponseHandler handler) {
+                        Log.d("Callback", "onEvent: ");
                         try {
-                            cordovaCallBack.success(data.toString());
+                            sendJSCallback(PluginResult.Status.OK, data.toString());
                         } catch (Exception e) {
-                            cordovaCallBack.success(e.getMessage());
+                            sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
                         }
                     }
                 });
             } catch (Exception e){
-                this.cordovaCallBack.success(e.getMessage());
+                sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
             }
         }
+    }
+
+    private void sendJSCallback(PluginResult.Status status, String data) {
+        PluginResult pluginResult = new PluginResult(status, data);
+        pluginResult.setKeepCallback(true); // keep callback
+        cordovaCallBack.sendPluginResult(pluginResult);
     }
 
     private void process(JSONArray args) {
@@ -241,7 +248,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
                 this.hyperServices.process(params);
             } catch (Exception e){
-                this.cordovaCallBack.success(e.getMessage());
+                sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
             }
         }
     }
@@ -258,7 +265,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
     public void isNull() {
         boolean nullStatus = hyperServices == null?true:false;
-        this.cordovaCallBack.success(nullStatus?"true":"false");
+        sendJSCallback(PluginResult.Status.OK, nullStatus?"true":"false");
     }
 
     public void isInitialised() {
@@ -268,9 +275,9 @@ public class HyperSDKPlugin extends CordovaPlugin {
             if (hyperServices != null) {
                 try {
                     isInitialized = hyperServices.isInitialised();
-                    this.cordovaCallBack.success(isInitialized?"true":"false");
+                    sendJSCallback(PluginResult.Status.OK, isInitialized?"true":"false");
                 } catch (Exception e) {
-                    this.cordovaCallBack.success(e.getMessage());
+                    sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
                 }
             }
         }
