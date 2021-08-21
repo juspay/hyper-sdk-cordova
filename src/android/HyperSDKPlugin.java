@@ -1,22 +1,10 @@
 package in.juspay.hypersdk;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.webkit.WebView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -32,8 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 
 import in.juspay.hypersdk.core.PaymentConstants;
 import in.juspay.hypersdk.core.SdkTracker;
@@ -54,6 +40,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     private static final String isINITIALISED = "isInitialised";
     private static final String TERMINATE = "terminate";
     private static final String isNULL = "isNull";
+    private static final String onBACKPRESS = "backPress";
     private static final String SDK_TRACKER_LABEL = "hyper_sdk_cordova";
 
     /**
@@ -64,7 +51,6 @@ public class HyperSDKPlugin extends CordovaPlugin {
     private static final Object lock = new Object();
     private static final RequestPermissionsResultDelegate requestPermissionsResultDelegate = new RequestPermissionsResultDelegate();
 
-    private final static int REQUEST_CODE = 88;
     public static CordovaInterface cordova = null;
     CallbackContext cordovaCallBack;
     @Nullable
@@ -103,6 +89,16 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext){
+
+        if (onBACKPRESS.equalsIgnoreCase(action)) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    onBackPressed(args, callbackContext);
+                }
+            });
+            return true;
+        }
+
         this.cordovaCallBack = callbackContext;
 
         if (PREFETCH.equalsIgnoreCase(action)) {
@@ -284,6 +280,27 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     /**
+     * Notifies HyperSDK that a backPress event is triggered.
+     * Merchants are required to call this method from their
+     * activity as by default activity will not forward any backPress
+     * calls to the fragments running inside it.
+     *
+     * @param args  The arguments that was received from js plugin
+     *                     {@code onBackPressed} method.
+     * @param callbackContext  Callback to be triggered for response
+     *                     {@code onBackPressed} method.
+     */
+    public void onBackPressed(final JSONArray args, final CallbackContext callbackContext) {
+        try {
+            boolean backPressHandled = hyperServices.onBackPressed();
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, backPressHandled?"true":"false");
+            callbackContext.sendPluginResult(pluginResult);
+        } catch (Exception e) {
+            sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
+        }
+    }
+
+    /**
      * Notifies HyperSDK that a response for permissions is here. Merchants are required to call
      * this method from their activity as by default activity will
      * not forward any results to the fragments running inside it.
@@ -295,7 +312,8 @@ public class HyperSDKPlugin extends CordovaPlugin {
      * @param grantResults The results of each permission received in your activity's
      *                     {@code onRequestPermissionsResult} method.
      */
-    public static void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    @Override
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException  {
         synchronized (lock) {
             requestPermissionsResultDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }

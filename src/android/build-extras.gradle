@@ -11,6 +11,8 @@ allprojects {
 dependencies {
   def hyperSDKVersion = "2.0.3-rc.29"
   implementation "in.juspay:hypersdk:$hyperSDKVersion"
+  implementation 'in.juspay:amazonpay-silentpay-sdk:1.0.0'
+  implementation 'in.juspay:amazonpay-hardened-silentpay-sdk:1.0.0'
 }
 
 ext.cdvCompileSdkVersion = 29

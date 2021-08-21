@@ -5,7 +5,6 @@
 - [About](#about)
 - [Getting Started](#getting_started)
 - [Usage](#usage)
-- [Contributing](../CONTRIBUTING.md)
 
 ## About
 
@@ -32,7 +31,8 @@ Create an instance for HyperSDK cordova plugin by using:
 hyperSDKRef = cordova.plugins.HyperSDKPlugin
 ```
 
-All payload ref is available at [HyperSDK doc](https://developer.juspay.in/v4.0/).
+EC Headless - All payload ref is available at [HyperSDK EC doc](https://developer.juspay.in/v2.0/).
+Payment Page - All payload ref is available at [HyperSDK Payment page doc](https://developer.juspay.in/v4.0/).
 
 ### PreFetch
 
@@ -43,7 +43,7 @@ var payload = {
     "service" : "in.juspay.hyperpay",
     "betaAssets" : true,
     "payload" : {
-        "clientId" : "<merchantId>_platform"
+        "clientId" : "<client_id>"
     }
 }
 hyperSDKRef.preFetch(JSON.stringify({payload}))
@@ -74,6 +74,8 @@ var payload = {
 hyperSDKRef.initiate(JSON.stringify(completePayload), hyperSDKCallback);
 ```
 
+Initiate payload - All payload ref is available at [HyperSDK initiate](https://developer.juspay.in/v2.0/docs/initiate-payload).
+
 ### Process
 
 To serve dynamically changing requirements for the payments ecosystem HyperSDK uses a JS engine to improve user experience and enable faster iterations.
@@ -99,6 +101,7 @@ var payload = {
 hyperSDKRef.process(JSON.stringify(completePayload));
 ```
 
+Process payload - All payload ref is available at [HyperSDK process](https://developer.juspay.in/v2.0/docs/process-payload).
+
 ## TODO
-1. Activity result handling is pending - Code added, Not tested
 1. Add dynamic assets plugin for android and ios
