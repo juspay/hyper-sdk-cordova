@@ -4,7 +4,7 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Usage](#usage)
+- [SDK API](#sdk_api)
 
 ## About
 
@@ -21,7 +21,7 @@ cordova plugin add hyper-sdk-cordova
 Also it can be added as direct branch reference: 
 
 ```sh
-cordova plugin add git+ssh://git@bitbucket.org/juspay/hyper-sdk-cordova#PICAF-1811-cordova-plugin-2.0
+cordova plugin add git+ssh://git@bitbucket.org/juspay/hyper-sdk-cordova#master
 ```
 
 ## SDK API
@@ -78,9 +78,8 @@ Initiate payload - All payload ref is available at [HyperSDK initiate](https://d
 
 ### Process
 
-To serve dynamically changing requirements for the payments ecosystem HyperSDK uses a JS engine to improve user experience and enable faster iterations.
-Initiate API starts up the js engine and enables it to improve the performance and experience of the next SDK API calls.
-To call initiate, use the following snippet:
+Process api helps with all the required operation to be triggered via HyperSDK.
+Responses and various events triggered are streamed back to callback passed in Initiate.
 
 ```javascript
 var payload = {
@@ -102,6 +101,19 @@ hyperSDKRef.process(JSON.stringify(completePayload));
 ```
 
 Process payload - All payload ref is available at [HyperSDK process](https://developer.juspay.in/v2.0/docs/process-payload).
+
+### Backpress Handling
+
+For android and other cases where system backpress or hardware backpress needs to be handled. We need to override default backpress and call HyperSDK backpress handler. [Cordova doc ref](https://cordova.apache.org/docs/en/10.x/cordova/events/events.html#backbutton)
+
+```javascript
+document.addEventListener("backbutton", onBackKeyDown, false);
+function onBackKeyDown() {
+    hyperSDKRef.onBackPress(function (response) {
+        // if response true HyperSDK will handle else app can handle backpress
+    });
+}
+```
 
 ## TODO
 1. Add dynamic assets plugin for android and ios
