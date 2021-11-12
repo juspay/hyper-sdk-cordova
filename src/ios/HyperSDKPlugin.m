@@ -12,8 +12,6 @@
 
 @property HyperServices *hyperInstance;
 @property NSString *callback;
-@property UINavigationController *baseNavigationController;
-@property UIViewController *baseViewController;
 
 @end
 
@@ -81,21 +79,13 @@
         @try {
             NSDictionary *jsonData = arguments;
             if (jsonData && [jsonData isKindOfClass:[NSDictionary class]] && jsonData.allKeys.count>0) {
-                self.baseViewController = [[UIViewController alloc] init];
-                self.baseNavigationController = [[UINavigationController alloc] initWithRootViewController:self.baseViewController];
-                self.baseNavigationController.modalPresentationStyle = UIModalPresentationOverFullScreen;
-                self.baseNavigationController.navigationBar.hidden = true;
                 __weak HyperSDKPlugin *weakSelf = self;
-                [_hyperInstance initiate:self.baseViewController payload:jsonData callback:^(NSDictionary<NSString *,id> * _Nullable data) {
-                    NSString *event = data[@"event"];
-                    if ([event isEqualToString:@"process_result"]) {
-                        [weakSelf.baseNavigationController dismissViewControllerAnimated:false completion:nil];
-                    }
+                [_hyperInstance initiate:self.viewController payload:jsonData callback:^(NSDictionary<NSString *,id> * _Nullable data) {
                     pluginResult = [CDVPluginResult
                                           resultWithStatus:CDVCommandStatus_OK
                                     messageAsString:[HyperSDKPlugin dictionaryToString:data]];
                     pluginResult.keepCallback = [NSNumber numberWithInt:1];
-                    [self.commandDelegate sendPluginResult:pluginResult callbackId:self->_callback];
+                    [weakSelf.commandDelegate sendPluginResult:pluginResult callbackId:self->_callback];
                 }];
             } else {
                 pluginResult = [CDVPluginResult
@@ -127,10 +117,8 @@
     if (arguments && arguments.count>0) {
         @try {
             if (arguments && [arguments isKindOfClass:[NSDictionary class]] && arguments.allKeys.count>0) {
-                if ([self.hyperInstance isInitialised] && self.baseNavigationController && ![self.baseNavigationController presentingViewController]) {
-                    [self.viewController presentViewController:self.baseNavigationController animated:false completion:^{
-                                        [self.hyperInstance process:arguments];
-                    }];
+                if ([self.hyperInstance isInitialised]) {
+                    [self.hyperInstance process:arguments];
                 } else {
                     // Define proper error code and return proper error
                     
