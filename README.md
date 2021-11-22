@@ -15,7 +15,7 @@ Cordova plugin for HyperSDK.
 SDK is available as a node depdendecy via: 
 
 ```sh
-cordova plugin add hyper-sdk-cordova
+cordova plugin add hyper-sdk-plugin
 ```
 
 Also it can be added as direct branch reference: 
