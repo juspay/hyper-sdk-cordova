@@ -1,4 +1,4 @@
-cordova.define("hyper-sdk-plugin.HyperSDKPlugin", function (require, exports, module) {
+    
     var cordova = require("cordova"),
         exec = require("cordova/exec");
 
@@ -30,4 +30,3 @@ cordova.define("hyper-sdk-plugin.HyperSDKPlugin", function (require, exports, mo
             callNative("backPress", {}, callback);
         }
     }
-});

@@ -114,6 +114,3 @@ function onBackKeyDown() {
     });
 }
 ```
-
-## TODO
-1. Add dynamic assets plugin for android and ios
