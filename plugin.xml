@@ -37,6 +37,7 @@
             <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
         </config-file>
         <source-file src="src/android/HyperSDKPlugin.java" target-dir="src/in/juspay/hypersdk" />
+        <source-file src="src/android/MerchantConfig.txt" target-dir="../../" />
         <framework custom="true" src="src/android/build-extras.gradle" type="gradleReference"/>
     </platform>
     
