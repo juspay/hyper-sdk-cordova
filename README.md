@@ -104,13 +104,26 @@ Process payload - All payload ref is available at [HyperSDK process](https://dev
 
 ### Backpress Handling
 
-For android and other cases where system backpress or hardware backpress needs to be handled. We need to override default backpress and call HyperSDK backpress handler. [Cordova doc ref](https://cordova.apache.org/docs/en/10.x/cordova/events/events.html#backbutton)
+For android, system or hardware backpress needs to be handled. Override onBackPressed() method provided by activity and call HyperSDK's onBackPressed() method to check whether the activity needs to handle backpress or SDK is handling it.
 
-```javascript
-document.addEventListener("backbutton", onBackKeyDown, false);
-function onBackKeyDown() {
-    hyperSDKRef.onBackPress(function (response) {
-        // if response true HyperSDK will handle else app can handle backpress
-    });
+```java
+@Override
+public void onBackPressed() {
+    boolean backPressHandled = HyperSDKPlugin.onBackPressed();
+    if (!backPressHandled) {
+        super.onBackPressed();
+    }
+}
+```
+
+### Reset Activity
+
+For android, override onDestroy method of the activity and call HyperSDK's resetActivity() method to avoid any memory leaks
+
+```java
+@Override
+public void onDestroy() {
+    HyperSDKPlugin.resetActivity();
+    super.onDestroy();
 }
 ```

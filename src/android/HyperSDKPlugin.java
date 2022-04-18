@@ -54,7 +54,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     public static CordovaInterface cordova = null;
     CallbackContext cordovaCallBack;
     @Nullable
-    private HyperServices hyperServices;
+    private static HyperServices hyperServices;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -193,7 +193,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
                         "hyperServices is null");
                     return;
                 }
-                this.hyperServices.initiate(params, new HyperPaymentsCallbackAdapter() {
+                this.hyperServices.initiate(activity, params, new HyperPaymentsCallbackAdapter() {
                     @Override
                     public void onEvent(JSONObject data, JuspayResponseHandler handler) {
                         Log.d("Callback", "onEvent: ");
@@ -242,7 +242,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     return;
                 }
 
-                this.hyperServices.process(params);
+                this.hyperServices.process(activity, params);
             } catch (Exception e){
                 sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
             }
@@ -276,6 +276,16 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
                 }
             }
+        }
+    }
+
+    public static boolean onBackPressed () {
+        return hyperServices != null && hyperServices.onBackPressed();
+    }
+
+    public static void resetActivity() {
+        if (hyperServices != null) {
+            hyperServices.resetActivity();
         }
     }
 
