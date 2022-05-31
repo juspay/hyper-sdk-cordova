@@ -113,7 +113,7 @@ module.exports = (context) => {
 
 
                 // Add the Complete path to the MainActivity
-                const newActivityPath = utilities.getAndroidSourcePath(context) + "/" + packageName.replaceAll("\\.", "/") + '/MainActivity.java';
+                const newActivityPath = utilities.getAndroidSourcePath(context) + "/" + packageName.replace(/\./g, "/") + '/MainActivity.java';
 
 
                 // will replace FragmentActivity with our HyperActivity.
