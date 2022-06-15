@@ -28,5 +28,8 @@
         },
         onBackPress: function (callback) {
             callNative("backPress", {}, callback);
+        },
+        terminate: function() {
+            callNative("terminate", {}, sharedCallback);
         }
     }
