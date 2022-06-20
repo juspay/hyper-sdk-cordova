@@ -10,18 +10,26 @@
 
 Cordova plugin for HyperSDK.
 
+## Minimum Requirement
+
+### Android
+
+The minimum version of cordova-android supported with HyperSDK is [10.0.0](https://github.com/apache/cordova-android/blob/master/RELEASENOTES.md#1000-jul-17-2021) which uses `androidx` and `AppCompatActivity`.
+
 ## Getting the SDK
 
-SDK is available as a node depdendecy via: 
+SDK is available as a node depdendecy via:
 
 ```sh
 cordova plugin add hyper-sdk-plugin
 ```
 
-Also it can be added as direct branch reference: 
+## Updating your clientId
 
-```sh
-cordova plugin add git+ssh://git@bitbucket.org/juspay/hyper-sdk-cordova#master
+Update your clientId provided by Juspay Support Team in the `MerchantConfig.txt` file present under `platforms/android/app/`
+
+```txt
+clientId = <clientId shared by Juspay Team>
 ```
 
 ## SDK API
@@ -102,28 +110,3 @@ hyperSDKRef.process(JSON.stringify(completePayload));
 
 Process payload - All payload ref is available at [HyperSDK process](https://developer.juspay.in/v2.0/docs/process-payload).
 
-### Backpress Handling
-
-For android, system or hardware backpress needs to be handled. Override onBackPressed() method provided by activity and call HyperSDK's onBackPressed() method to check whether the activity needs to handle backpress or SDK is handling it.
-
-```java
-@Override
-public void onBackPressed() {
-    boolean backPressHandled = HyperSDKPlugin.onBackPressed();
-    if (!backPressHandled) {
-        super.onBackPressed();
-    }
-}
-```
-
-### Reset Activity
-
-For android, override onDestroy method of the activity and call HyperSDK's resetActivity() method to avoid any memory leaks
-
-```java
-@Override
-public void onDestroy() {
-    HyperSDKPlugin.resetActivity();
-    super.onDestroy();
-}
-```

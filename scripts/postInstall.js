@@ -113,18 +113,18 @@ module.exports = (context) => {
 
 
                 // Add the Complete path to the MainActivity
-                const newActivityPath = utilities.getAndroidSourcePath(context) + "/" + packageName.replace(/\./g, "/") + '/MainActivity.java';
+                const mainActivityPath = utilities.getAndroidSourcePath(context) + "/" + packageName.replace(/\./g, "/") + '/MainActivity.java';
 
 
                 // will replace FragmentActivity with our HyperActivity.
-                let newSuperClass = fs.readFileSync(newActivityPath).toString();
-                const addedActivity = `in.juspay.hypersdk.HyperActivity`
-                newSuperClass = newSuperClass.replace("extends FragmentActivity", "extends " + addedActivity);
+                let mainActivityCode = fs.readFileSync(mainActivityPath).toString();
+                const newSuperClass = "extends in.juspay.hypersdk.HyperActivity";
+                mainActivityCode = mainActivityCode.replace("extends CordovaActivity", newSuperClass);
 
 
                 // This will add 'in.juspay.hypersdk.HyperActivity' into our MainActivity
                 // so that HyperActivity.java could be accessed directly.
-                fs.writeFile(newActivityPath, newSuperClass, function(err) {
+                fs.writeFile(mainActivityPath, mainActivityCode, function(err) {
                     if (err) return console.error(err);
                 });
 

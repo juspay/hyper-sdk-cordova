@@ -1,8 +1,8 @@
 package in.juspay.hypersdk;
 
-import androidx.fragment.app.FragmentActivity;
+import org.apache.cordova.*;
 
-public class HyperActivity extends FragmentActivity {
+public class HyperActivity extends CordovaActivity {
     @Override
     public void onBackPressed() {
         boolean backPressHandled = HyperSDKPlugin.onBackPressed();
