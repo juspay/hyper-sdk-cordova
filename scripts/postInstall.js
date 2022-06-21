@@ -104,21 +104,35 @@ module.exports = (context) => {
         if (androidManifest) {
             parseString(androidManifest, (err, manifest) => {
 
-                if (err) {
-                    return console.error(err);
-                }
+                if (err) return console.error(err);
 
-                // Add the path to the activityPath.
-                const packageName = manifest['manifest']['$']['package'];
+                // Getting the package name from the manifest
+                const packageName = manifest['manifest']['$']['package']
+                const packagePath = packageName.replace(/\./g, "/");
+
+                // HyperActivity
+                const hyperActivityInputPath = utilities.getAndroidSourcePath(context) + "/in/juspay/hypersdk/HyperActivity.java";
+                const hyperActivityOutputPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/HyperActivity.java';
+
+                // Replacing packageName in HyperActivity with app's packageName and writing it to the merchant's packagePath
+                let hyperActivityCode = fs.readFileSync(hyperActivityInputPath).toString();
+                hyperActivityCode = hyperActivityCode.replace(/\$\{mypackage\}/g, packageName);
+                fs.writeFile(hyperActivityOutputPath, hyperActivityCode, function (err) {
+                    if (err) return console.error(err);
+                });
+
+                // deleting the old HyperActivity
+                fs.unlink(hyperActivityInputPath, function (err) {
+                    if (err) return console.error(err);
+                });
 
 
                 // Add the Complete path to the MainActivity
-                const mainActivityPath = utilities.getAndroidSourcePath(context) + "/" + packageName.replace(/\./g, "/") + '/MainActivity.java';
-
+                const mainActivityPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/MainActivity.java';
 
                 // will replace FragmentActivity with our HyperActivity.
                 let mainActivityCode = fs.readFileSync(mainActivityPath).toString();
-                const newSuperClass = "extends in.juspay.hypersdk.HyperActivity";
+                const newSuperClass = "extends HyperActivity";
                 mainActivityCode = mainActivityCode.replace("extends CordovaActivity", newSuperClass);
 
 

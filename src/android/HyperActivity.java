@@ -1,6 +1,7 @@
-package in.juspay.hypersdk;
+package ${mypackage};
 
 import org.apache.cordova.*;
+import in.juspay.hypersdk.HyperSDKPlugin;
 
 public class HyperActivity extends CordovaActivity {
     @Override
