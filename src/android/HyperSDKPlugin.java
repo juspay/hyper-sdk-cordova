@@ -323,7 +323,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
      *                     {@code onRequestPermissionsResult} method.
      */
     @Override
-    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException  {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException  {
         synchronized (lock) {
             requestPermissionsResultDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
