@@ -26,6 +26,7 @@ import in.juspay.hypersdk.core.SdkTracker;
 import in.juspay.hypersdk.data.JuspayResponseHandler;
 import in.juspay.hypersdk.ui.HyperPaymentsCallbackAdapter;
 import in.juspay.services.HyperServices;
+import ${package}.ProcessActivity;
 
 /**
  * Module that exposes Hyper SDK to Cordova bridge JavaScript code.
@@ -41,7 +42,9 @@ public class HyperSDKPlugin extends CordovaPlugin {
     private static final String TERMINATE = "terminate";
     private static final String isNULL = "isNull";
     private static final String onBACKPRESS = "backPress";
-    private static final String SDK_TRACKER_LABEL = "hyper_sdk_cordova";
+
+    public static final String SDK_TRACKER_LABEL = "hyper_sdk_cordova";
+    public static final String PROCESS_PAYLOAD_ARG = "processPayload";
 
     /**
      * All the React methods in here should be synchronized on this specific object because there
@@ -55,6 +58,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     CallbackContext cordovaCallBack;
     @Nullable
     private static HyperServices hyperServices;
+    private static ProcessCallback processCallback;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -196,7 +200,10 @@ public class HyperSDKPlugin extends CordovaPlugin {
                 this.hyperServices.initiate(activity, params, new HyperPaymentsCallbackAdapter() {
                     @Override
                     public void onEvent(JSONObject data, JuspayResponseHandler handler) {
-                        Log.d("Callback", "onEvent: ");
+                        Log.d("Callback onEvent", data.toString());
+                        if ("process_result".equals(data.optString("event"))) {
+                            processCallback.onResult();
+                        }
                         try {
                             sendJSCallback(PluginResult.Status.OK, data.toString());
                         } catch (Exception e) {
@@ -220,7 +227,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
         synchronized (lock) {
             try{
                 FragmentActivity activity = (FragmentActivity) cordova.getActivity();
-                JSONObject params = new JSONObject(String.valueOf(args.get(0)));
+                String params = String.valueOf(args.get(0));
                 Log.d(LOG_TAG,params.toString());
                 if (activity == null) {
                     SdkTracker.trackBootLifecycle(
@@ -242,11 +249,29 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     return;
                 }
 
-                this.hyperServices.process(activity, params);
+                Intent i = new Intent(activity, ProcessActivity.class);
+                i.putExtra(PROCESS_PAYLOAD_ARG, params);
+                activity.startActivity(i);
+
             } catch (Exception e){
                 sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
             }
         }
+    }
+
+    public static void processWithActivity(FragmentActivity activity, JSONObject params, ProcessCallback processCallback) {
+        if (hyperServices == null) {
+            SdkTracker.trackBootLifecycle(
+                    PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
+                    PaymentConstants.LogLevel.ERROR,
+                    SDK_TRACKER_LABEL,
+                    "process",
+                    "hyperServices is null");
+            sendJSCallback(PluginResult.Status.ERROR, "HyperServices is null");
+            return;
+        }
+        HyperSDKPlugin.processCallback = processCallback;
+        hyperServices.process(activity, params);
     }
 
     public void terminate() {
@@ -260,7 +285,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     public void isNull() {
-        boolean nullStatus = hyperServices == null?true:false;
+        boolean nullStatus = hyperServices == null;
         sendJSCallback(PluginResult.Status.OK, nullStatus?"true":"false");
     }
 
@@ -378,5 +403,9 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
             hyperServices.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    public interface ProcessCallback {
+        void onResult();
     }
 }
