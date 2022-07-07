@@ -35,10 +35,11 @@
             <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
         </config-file>
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
-            <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:exported="false" android:label="@string/activity_name" android:launchMode="singleTop" android:name=".ProcessActivity" android:theme="@style/Theme.AppCompat.NoActionBar" android:windowSoftInputMode="adjustResize" />
+            <activity android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode" android:exported="false" android:label="@string/activity_name" android:launchMode="singleTop" android:name=".ProcessActivity" android:theme="@style/Theme.AppCompat.Juspay.Transparent" android:windowSoftInputMode="adjustResize" />
         </config-file>
         <source-file src="src/android/HyperSDKPlugin.java" target-dir="src/in/juspay/hypersdk" />
         <source-file src="src/android/HyperActivity.java" target-dir="src/in/juspay/hypersdk" />
+        <resource-file src="src/android/jp_styles.xml" target="res/values/jp_styles.xml" />
         <source-file src="src/android/MerchantConfig.txt" target-dir="../../" />
         <framework custom="true" src="src/android/build-extras.gradle" type="gradleReference"/>
         <hook type="after_plugin_install" src="/scripts/postInstall.js"/>

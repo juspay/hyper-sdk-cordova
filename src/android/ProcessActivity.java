@@ -16,7 +16,7 @@ public class ProcessActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
         try {
             JSONObject payload = new JSONObject(getIntent().getStringExtra(HyperSDKPlugin.PROCESS_PAYLOAD_ARG));
