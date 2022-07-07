@@ -69,7 +69,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="HyperSDK" spec="2.1.6" />
+                <pod name="HyperSDK" spec="2.1.9" />
             </pods>
         </podspec>
     </platform>
