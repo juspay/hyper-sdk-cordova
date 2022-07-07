@@ -29,7 +29,10 @@
         onBackPress: function (callback) {
             callNative("backPress", {}, callback);
         },
-        terminate: function() {
+        terminate: function () {
             callNative("terminate", {}, sharedCallback);
+        },
+        isInitialised: function () {
+            callNative("isInitialised", {}, sharedCallback);
         }
     }

@@ -267,7 +267,6 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     SDK_TRACKER_LABEL,
                     "process",
                     "hyperServices is null");
-            sendJSCallback(PluginResult.Status.ERROR, "HyperServices is null");
             return;
         }
         HyperSDKPlugin.processCallback = processCallback;
