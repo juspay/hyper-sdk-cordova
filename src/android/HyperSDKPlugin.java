@@ -26,7 +26,7 @@ import in.juspay.hypersdk.core.SdkTracker;
 import in.juspay.hypersdk.data.JuspayResponseHandler;
 import in.juspay.hypersdk.ui.HyperPaymentsCallbackAdapter;
 import in.juspay.services.HyperServices;
-import ${package}.ProcessActivity;
+import ${mypackage}.ProcessActivity;
 
 /**
  * Module that exposes Hyper SDK to Cordova bridge JavaScript code.

@@ -1,4 +1,4 @@
-package ${package};
+package ${mypackage};
 
 import android.os.Bundle;
 

@@ -39,6 +39,7 @@
         </config-file>
         <source-file src="src/android/HyperSDKPlugin.java" target-dir="src/in/juspay/hypersdk" />
         <source-file src="src/android/HyperActivity.java" target-dir="src/in/juspay/hypersdk" />
+        <source-file src="src/android/ProcessActivity.java" target-dir="src/in/juspay/hypersdk" />
         <resource-file src="src/android/jp_styles.xml" target="res/values/jp_styles.xml" />
         <source-file src="src/android/MerchantConfig.txt" target-dir="../../" />
         <framework custom="true" src="src/android/build-extras.gradle" type="gradleReference"/>

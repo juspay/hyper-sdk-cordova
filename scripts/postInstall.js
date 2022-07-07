@@ -126,6 +126,30 @@ module.exports = (context) => {
                     if (err) return console.error(err);
                 });
 
+                // ProcessActivity
+                const processActivityInputPath = utilities.getAndroidSourcePath(context) + "/in/juspay/hypersdk/ProcessActivity.java";
+                const processActivityOutputPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/ProcessActivity.java';
+
+                // Replacing packageName in ProcessActivity with app's packageName and writing it to the merchant's packagePath
+                let processActivityCode = fs.readFileSync(processActivityInputPath).toString();
+                processActivityCode = processActivityCode.replace(/\$\{mypackage\}/g, packageName);
+                fs.writeFile(processActivityOutputPath, processActivityCode, function (err) {
+                    if (err) return console.error(err);
+                });
+
+                // deleting the old ProcessActivity
+                fs.unlink(processActivityInputPath, function (err) {
+                    if (err) return console.error(err);
+                });
+
+
+                // Replacing packageName in HyperSDKPlugin with app's packageName
+                const hyperSdkPluginPath = utilities.getAndroidSourcePath(context) +"/in/juspay/hypersdk/HyperSDKPlugin.java";
+                let hyperSdkPluginCode = fs.readFileSync(hyperSdkPluginPath).toString();
+                hyperSdkPluginCode = hyperSdkPluginCode.replace(/\$\{mypackage\}/g, packageName);
+                fs.writeFileSync(hyperSdkPluginPath, hyperSdkPluginCode, function (err) {
+                    if (err) return console.error(err);
+                });
 
                 // Add the Complete path to the MainActivity
                 const mainActivityPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/MainActivity.java';
