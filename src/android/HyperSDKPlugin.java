@@ -307,9 +307,9 @@ public class HyperSDKPlugin extends CordovaPlugin {
         return hyperServices != null && hyperServices.onBackPressed();
     }
 
-    public static void resetActivity() {
+    public static void resetActivity(FragmentActivity activity) {
         if (hyperServices != null) {
-            hyperServices.resetActivity();
+            hyperServices.resetActivity(activity);
         }
     }
 
