@@ -41,7 +41,7 @@
         <source-file src="src/android/HyperActivity.java" target-dir="src/in/juspay/hypersdk" />
         <source-file src="src/android/ProcessActivity.java" target-dir="src/in/juspay/hypersdk" />
         <resource-file src="src/android/jp_styles.xml" target="res/values/jp_styles.xml" />
-        <source-file src="src/android/MerchantConfig.txt" target-dir="../../" />
+        <source-file src="src/MerchantConfig.txt" target-dir="../../" />
         <framework custom="true" src="src/android/build-extras.gradle" type="gradleReference"/>
         <hook type="after_plugin_install" src="/scripts/postInstall.js"/>
     </platform>
@@ -64,6 +64,7 @@
             </feature>
         </config-file>
         <source-file src="src/ios/HyperSDKPlugin.m" />
+        <source-file src="src/MerchantConfig.txt" framework="true"  target-dir="../../../"/>
         <podspec>
             <config>
                 <source url="https://github.com/CocoaPods/Specs.git"/>
