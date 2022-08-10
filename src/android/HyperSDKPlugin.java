@@ -189,13 +189,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     return;
                 }
                 if (this.hyperServices == null) {
-                    SdkTracker.trackBootLifecycle(
-                        PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                        PaymentConstants.LogLevel.ERROR,
-                        SDK_TRACKER_LABEL,
-                        "initiate",
-                        "hyperServices is null");
-                    return;
+                    hyperServices = new HyperServices(activity);
                 }
                 this.hyperServices.initiate(activity, params, new HyperPaymentsCallbackAdapter() {
                     @Override
