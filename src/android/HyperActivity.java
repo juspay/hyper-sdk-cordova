@@ -1,9 +1,25 @@
 package ${mypackage};
 
-import org.apache.cordova.*;
+import android.content.Intent;
+import android.os.Bundle;
+
+import org.apache.cordova.CordovaActivity;
+
 import in.juspay.hypersdk.HyperSDKPlugin;
 
 public class HyperActivity extends CordovaActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!isTaskRoot()) {
+            final Intent intent = getIntent();
+            final String intentAction = intent.getAction();
+            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
+                HyperSDKPlugin.notifyMerchantOnActivityRecreate();
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         boolean backPressHandled = HyperSDKPlugin.onBackPressed();

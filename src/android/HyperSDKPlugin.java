@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.juspay.hypersdk.core.PaymentConstants;
 import in.juspay.hypersdk.core.SdkTracker;
@@ -55,16 +56,22 @@ public class HyperSDKPlugin extends CordovaPlugin {
     private static final RequestPermissionsResultDelegate requestPermissionsResultDelegate = new RequestPermissionsResultDelegate();
 
     public static CordovaInterface cordova = null;
-    CallbackContext cordovaCallBack;
+    private static CallbackContext cordovaCallBack;
+
     @Nullable
     private static HyperServices hyperServices;
+
     private static ProcessCallback processCallback;
+    private static AtomicBoolean isProcessActive;
+    @Nullable
+    private static JSONObject processPayload;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
         Log.i(LOG_TAG, "Initializing HyperSDK cordova plugin.");
-        this.cordova = cordova;
+        HyperSDKPlugin.cordova = cordova;
+        isProcessActive = new AtomicBoolean(false);
         synchronized (lock) {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -103,7 +110,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
             return true;
         }
 
-        this.cordovaCallBack = callbackContext;
+        cordovaCallBack = callbackContext;
 
         if (PREFETCH.equalsIgnoreCase(action)) {
             cordova.getActivity().runOnUiThread(new Runnable() {
@@ -188,14 +195,16 @@ public class HyperSDKPlugin extends CordovaPlugin {
                         "activity is null");
                     return;
                 }
-                if (this.hyperServices == null) {
+                if (hyperServices == null) {
                     hyperServices = new HyperServices(activity);
                 }
-                this.hyperServices.initiate(activity, params, new HyperPaymentsCallbackAdapter() {
+                hyperServices.initiate(activity, params, new HyperPaymentsCallbackAdapter() {
                     @Override
                     public void onEvent(JSONObject data, JuspayResponseHandler handler) {
                         Log.d("Callback onEvent", data.toString());
                         if ("process_result".equals(data.optString("event"))) {
+                            isProcessActive.set(false);
+                            processPayload = null;
                             processCallback.onResult();
                         }
                         try {
@@ -211,7 +220,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
         }
     }
 
-    private void sendJSCallback(PluginResult.Status status, String data) {
+    private static void sendJSCallback(PluginResult.Status status, String data) {
         PluginResult pluginResult = new PluginResult(status, data);
         pluginResult.setKeepCallback(true); // keep callback
         cordovaCallBack.sendPluginResult(pluginResult);
@@ -222,7 +231,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
             try{
                 FragmentActivity activity = (FragmentActivity) cordova.getActivity();
                 String params = String.valueOf(args.get(0));
-                Log.d(LOG_TAG,params.toString());
+                Log.d(LOG_TAG, params);
                 if (activity == null) {
                     SdkTracker.trackBootLifecycle(
                         PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
@@ -264,7 +273,35 @@ public class HyperSDKPlugin extends CordovaPlugin {
             return;
         }
         HyperSDKPlugin.processCallback = processCallback;
+
         hyperServices.process(activity, params);
+
+        isProcessActive.set(true);
+        processPayload = params;
+    }
+
+    public static void notifyMerchantOnActivityRecreate() {
+        synchronized (lock) {
+            if (isProcessActive.get()) {
+                JSONObject payload = new JSONObject();
+                processPayload = processPayload == null ? new JSONObject() : processPayload;
+                try {
+                    payload.put("event", "process_result");
+                    payload.put("requestId", processPayload.optString("requestId", "process"));
+                    payload.put("service", processPayload.optString("service", "service"));
+                    payload.put("payload", new JSONObject());
+                    payload.put("error", true);
+                    payload.put("errorCode", "JP_021");
+                    payload.put("errorMessage", "Failure, activity recreated");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                sendJSCallback(PluginResult.Status.ERROR, payload.toString());
+
+                isProcessActive.set(false);
+                processPayload = null;
+            }
+        }
     }
 
     public void terminate() {
@@ -283,7 +320,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     public void isInitialised() {
-        boolean isInitialized = false;
+        boolean isInitialized;
 
         synchronized (lock) {
             if (hyperServices != null) {
@@ -341,7 +378,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
      *                     {@code onRequestPermissionsResult} method.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException  {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         synchronized (lock) {
             requestPermissionsResultDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
