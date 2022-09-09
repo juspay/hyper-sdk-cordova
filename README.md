@@ -110,3 +110,6 @@ hyperSDKRef.process(JSON.stringify(completePayload));
 
 Process payload - All payload ref is available at [HyperSDK process](https://developer.juspay.in/v2.0/docs/process-payload).
 
+# License
+
+hyper-sdk-plugin (HyperSDK Cordova) is distributed under [AGPL-3.0-only](https://bitbucket.org/juspay/hyper-sdk-cordova/src/master/LICENSE.md).
