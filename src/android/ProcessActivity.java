@@ -48,6 +48,7 @@ public class ProcessActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         HyperSDKPlugin.resetActivity(this);
+        HyperSDKPlugin.notifyMerchantOnActivityRecreate(true);
         super.onDestroy();
     }
 }

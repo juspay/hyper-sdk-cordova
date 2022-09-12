@@ -112,4 +112,4 @@ Process payload - All payload ref is available at [HyperSDK process](https://dev
 
 # License
 
-hyper-sdk-plugin (HyperSDK Cordova) is distributed under [AGPL-3.0-only](https://bitbucket.org/juspay/hyper-sdk-cordova/src/master/LICENSE.md).
+hyper-sdk-plugin (HyperSDK Cordova) is distributed under [AGPL-3.0-only](https://bitbucket.org/juspay/hyper-sdk-cordova/src/release/LICENSE.md).

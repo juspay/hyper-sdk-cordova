@@ -280,11 +280,12 @@ public class HyperSDKPlugin extends CordovaPlugin {
         processPayload = params;
     }
 
-    public static void notifyMerchantOnActivityRecreate() {
+    public static void notifyMerchantOnActivityRecreate(boolean isProcessActivity) {
         synchronized (lock) {
             if (isProcessActive.get()) {
                 JSONObject payload = new JSONObject();
                 processPayload = processPayload == null ? new JSONObject() : processPayload;
+                String errorMessage = isProcessActivity ? "Payment activity destroyed" : "MainActivity recreated";
                 try {
                     payload.put("event", "process_result");
                     payload.put("requestId", processPayload.optString("requestId", "process"));
@@ -292,7 +293,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     payload.put("payload", new JSONObject());
                     payload.put("error", true);
                     payload.put("errorCode", "JP_021");
-                    payload.put("errorMessage", "Failure, activity recreated");
+                    payload.put("errorMessage", errorMessage);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
