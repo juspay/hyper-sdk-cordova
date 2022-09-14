@@ -84,6 +84,21 @@ hyperSDKRef.initiate(JSON.stringify(completePayload), hyperSDKCallback);
 
 Initiate payload - All payload ref is available at [HyperSDK initiate](https://developer.juspay.in/v2.0/docs/initiate-payload).
 
+#### To check if SDK is initialised
+
+```javascript
+hyperSDKRef.isInitialised((response) => {
+    // response: A boolean value indicating if the SDK is initialised
+});
+```
+
+#### To check if SDK instance is null or not
+
+```javascript
+hyperSDKRef.isNull((response) => {
+    // response: A boolean value indicating if the SDK instance is created or not
+});
+```
 ### Process
 
 Process api helps with all the required operation to be triggered via HyperSDK.

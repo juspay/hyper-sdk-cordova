@@ -110,6 +110,25 @@ public class HyperSDKPlugin extends CordovaPlugin {
             return true;
         }
 
+
+        if (isINITIALISED.equalsIgnoreCase(action)) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    isInitialised(callbackContext);
+                }
+            });
+            return true;
+        }
+        
+        if (isNULL.equalsIgnoreCase(action)) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    isNull(callbackContext);
+                }
+            });
+            return true;
+        }
+
         cordovaCallBack = callbackContext;
 
         if (PREFETCH.equalsIgnoreCase(action)) {
@@ -139,15 +158,6 @@ public class HyperSDKPlugin extends CordovaPlugin {
             return true;
         }
 
-        if (isINITIALISED.equalsIgnoreCase(action)) {
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    isInitialised();
-                }
-            });
-            return true;
-        }
-
         if (TERMINATE.equalsIgnoreCase(action)) {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
@@ -157,14 +167,6 @@ public class HyperSDKPlugin extends CordovaPlugin {
             return true;
         }
 
-        if (isNULL.equalsIgnoreCase(action)) {
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                public void run() {
-                    isNull();
-                }
-            });
-            return true;
-        }
 
         return false;
     }
@@ -252,9 +254,14 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     return;
                 }
 
-                Intent i = new Intent(activity, ProcessActivity.class);
-                i.putExtra(PROCESS_PAYLOAD_ARG, params);
-                activity.startActivity(i);
+                JSONObject payloadParams = new JSONObject(params);
+                if(payloadParams.optString("service").equals("in.juspay.hyperpay")) {
+                    Intent i = new Intent(activity, ProcessActivity.class);
+                    i.putExtra(PROCESS_PAYLOAD_ARG, params);
+                    activity.startActivity(i);
+                } else {
+                    hyperServices.process(activity, payloadParams);
+                }
 
             } catch (Exception e){
                 sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
@@ -315,19 +322,21 @@ public class HyperSDKPlugin extends CordovaPlugin {
         }
     }
 
-    public void isNull() {
+    public void isNull(final CallbackContext callbackContext) {
         boolean nullStatus = hyperServices == null;
-        sendJSCallback(PluginResult.Status.OK, nullStatus?"true":"false");
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, nullStatus);
+        callbackContext.sendPluginResult(pluginResult);
     }
 
-    public void isInitialised() {
-        boolean isInitialized;
+    public void isInitialised(final CallbackContext callbackContext) {
+        boolean isInitialised;
 
         synchronized (lock) {
             if (hyperServices != null) {
                 try {
-                    isInitialized = hyperServices.isInitialised();
-                    sendJSCallback(PluginResult.Status.OK, isInitialized?"true":"false");
+                    isInitialised = hyperServices.isInitialised();
+                    PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, isInitialised);
+                    callbackContext.sendPluginResult(pluginResult);
                 } catch (Exception e) {
                     sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
                 }

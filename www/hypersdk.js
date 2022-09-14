@@ -32,7 +32,10 @@
         terminate: function () {
             callNative("terminate", {}, sharedCallback);
         },
-        isInitialised: function () {
-            callNative("isInitialised", {}, sharedCallback);
+        isInitialised: function (callback) {
+            callNative("isInitialised", {}, callback);
+        },
+        isNull: function (callback) {
+            callNative("isNull", {}, callback);
         }
     }
