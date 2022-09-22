@@ -169,6 +169,10 @@ public class HyperSDKPlugin extends CordovaPlugin {
         return false;
     }
 
+    private boolean isPPMerchant(JSONObject payload) {
+        return payload.optString("service").equals("in.juspay.hyperpay");
+    }
+
     public void preFetch(JSONArray args) {
         try{
             JSONObject params = new JSONObject(String.valueOf(args.get(0)));
@@ -202,11 +206,12 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     @Override
                     public void onEvent(JSONObject data, JuspayResponseHandler handler) {
                         Log.d("Callback onEvent", data.toString());
-                        if ("process_result".equals(data.optString("event"))) {
+                        if (isPPMerchant(params) && "process_result".equals(data.optString("event"))) {
                             isProcessActive.set(false);
                             processPayload = null;
                             processCallback.onResult();
                         }
+
                         try {
                             sendJSCallback(PluginResult.Status.OK, data.toString());
                         } catch (Exception e) {
@@ -252,9 +257,14 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     return;
                 }
 
-                Intent i = new Intent(activity, ProcessActivity.class);
-                i.putExtra(PROCESS_PAYLOAD_ARG, params);
-                activity.startActivity(i);
+                JSONObject payloadParams = new JSONObject(params);
+                if (isPPMerchant(payloadParams)) {
+                    Intent i = new Intent(activity, ProcessActivity.class);
+                    i.putExtra(PROCESS_PAYLOAD_ARG, params);
+                    activity.startActivity(i);
+                } else {
+                    hyperServices.process(activity, payloadParams);
+                }
 
             } catch (Exception e){
                 sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
