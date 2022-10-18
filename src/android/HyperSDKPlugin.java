@@ -62,7 +62,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     private static HyperServices hyperServices;
 
     private static ProcessCallback processCallback;
-    private static AtomicBoolean isProcessActive;
+    private static AtomicBoolean isProcessActive = new AtomicBoolean(false);
     @Nullable
     private static JSONObject processPayload;
 
