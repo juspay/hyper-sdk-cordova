@@ -9,12 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +21,8 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import in.juspay.hypersdk.core.PaymentConstants;
+import in.juspay.hyper.constants.LogLevel;
+import in.juspay.hyper.constants.LogSubCategory;
 import in.juspay.hypersdk.core.SdkTracker;
 import in.juspay.hypersdk.data.JuspayResponseHandler;
 import in.juspay.hypersdk.ui.HyperPaymentsCallbackAdapter;
@@ -80,11 +80,11 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
                     if (activity == null) {
                         SdkTracker.trackBootLifecycle(
-                            PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                            PaymentConstants.LogLevel.ERROR,
-                            SDK_TRACKER_LABEL,
-                            "createHyperServices",
-                            "activity is null");
+                                LogSubCategory.LifeCycle.HYPER_SDK,
+                                LogLevel.ERROR,
+                                SDK_TRACKER_LABEL,
+                                "createHyperServices",
+                                "activity is null");
                         return;
                     }
                     Context context = activity.getApplicationContext();
@@ -99,7 +99,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     @Override
-    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext){
+    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
 
         if (onBACKPRESS.equalsIgnoreCase(action)) {
             cordova.getActivity().runOnUiThread(new Runnable() {
@@ -174,29 +174,29 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     public void preFetch(JSONArray args) {
-        try{
+        try {
             JSONObject params = new JSONObject(String.valueOf(args.get(0)));
-            Log.d(LOG_TAG,params.toString());
+            Log.d(LOG_TAG, params.toString());
             HyperServices.preFetch(cordova.getActivity().getApplicationContext(), params);
             sendJSCallback(PluginResult.Status.OK, "success");
-        } catch (Exception e){
+        } catch (Exception e) {
             sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
         }
     }
 
     private void initiate(JSONArray args) {
         synchronized (lock) {
-            try{
+            try {
                 FragmentActivity activity = (FragmentActivity) cordova.getActivity();
                 JSONObject params = new JSONObject(String.valueOf(args.get(0)));
-                Log.d(LOG_TAG,params.toString());
+                Log.d(LOG_TAG, params.toString());
                 if (activity == null) {
                     SdkTracker.trackBootLifecycle(
-                        PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                        PaymentConstants.LogLevel.ERROR,
-                        SDK_TRACKER_LABEL,
-                        "initiate",
-                        "activity is null");
+                            LogSubCategory.LifeCycle.HYPER_SDK,
+                            LogLevel.ERROR,
+                            SDK_TRACKER_LABEL,
+                            "initiate",
+                            "activity is null");
                     return;
                 }
                 if (hyperServices == null) {
@@ -219,7 +219,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
                         }
                     }
                 });
-            } catch (Exception e){
+            } catch (Exception e) {
                 sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
             }
         }
@@ -233,27 +233,27 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
     private void process(JSONArray args) {
         synchronized (lock) {
-            try{
+            try {
                 FragmentActivity activity = (FragmentActivity) cordova.getActivity();
                 String params = String.valueOf(args.get(0));
                 Log.d(LOG_TAG, params);
                 if (activity == null) {
                     SdkTracker.trackBootLifecycle(
-                        PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                        PaymentConstants.LogLevel.ERROR,
-                        SDK_TRACKER_LABEL,
-                        "process",
-                        "activity is null");
+                            LogSubCategory.LifeCycle.HYPER_SDK,
+                            LogLevel.ERROR,
+                            SDK_TRACKER_LABEL,
+                            "process",
+                            "activity is null");
                     return;
                 }
 
                 if (hyperServices == null) {
                     SdkTracker.trackBootLifecycle(
-                        PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                        PaymentConstants.LogLevel.ERROR,
-                        SDK_TRACKER_LABEL,
-                        "process",
-                        "hyperServices is null");
+                            LogSubCategory.LifeCycle.HYPER_SDK,
+                            LogLevel.ERROR,
+                            SDK_TRACKER_LABEL,
+                            "process",
+                            "hyperServices is null");
                     return;
                 }
 
@@ -266,7 +266,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
                     hyperServices.process(activity, payloadParams);
                 }
 
-            } catch (Exception e){
+            } catch (Exception e) {
                 sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
             }
         }
@@ -275,8 +275,8 @@ public class HyperSDKPlugin extends CordovaPlugin {
     public static void processWithActivity(FragmentActivity activity, JSONObject params, ProcessCallback processCallback) {
         if (hyperServices == null) {
             SdkTracker.trackBootLifecycle(
-                    PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                    PaymentConstants.LogLevel.ERROR,
+                    LogSubCategory.LifeCycle.HYPER_SDK,
+                    LogLevel.ERROR,
                     SDK_TRACKER_LABEL,
                     "process",
                     "hyperServices is null");
@@ -327,7 +327,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
     public void isNull() {
         boolean nullStatus = hyperServices == null;
-        sendJSCallback(PluginResult.Status.OK, nullStatus?"true":"false");
+        sendJSCallback(PluginResult.Status.OK, nullStatus ? "true" : "false");
     }
 
     public void isInitialised() {
@@ -337,7 +337,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
             if (hyperServices != null) {
                 try {
                     isInitialized = hyperServices.isInitialised();
-                    sendJSCallback(PluginResult.Status.OK, isInitialized?"true":"false");
+                    sendJSCallback(PluginResult.Status.OK, isInitialized ? "true" : "false");
                 } catch (Exception e) {
                     sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
                 }
@@ -345,7 +345,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
         }
     }
 
-    public static boolean onBackPressed () {
+    public static boolean onBackPressed() {
         return hyperServices != null && hyperServices.onBackPressed();
     }
 
@@ -361,15 +361,15 @@ public class HyperSDKPlugin extends CordovaPlugin {
      * activity as by default activity will not forward any backPress
      * calls to the fragments running inside it.
      *
-     * @param args  The arguments that was received from js plugin
-     *                     {@code onBackPressed} method.
-     * @param callbackContext  Callback to be triggered for response
-     *                     {@code onBackPressed} method.
+     * @param args            The arguments that was received from js plugin
+     *                        {@code onBackPressed} method.
+     * @param callbackContext Callback to be triggered for response
+     *                        {@code onBackPressed} method.
      */
     public void onBackPressed(final JSONArray args, final CallbackContext callbackContext) {
         try {
             boolean backPressHandled = hyperServices.onBackPressed();
-            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, backPressHandled?"true":"false");
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, backPressHandled ? "true" : "false");
             callbackContext.sendPluginResult(pluginResult);
         } catch (Exception e) {
             sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
@@ -405,11 +405,11 @@ public class HyperSDKPlugin extends CordovaPlugin {
         synchronized (lock) {
             if (hyperServices == null) {
                 SdkTracker.trackBootLifecycle(
-                    PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                    PaymentConstants.LogLevel.ERROR,
-                    SDK_TRACKER_LABEL,
-                    "onActivityResult",
-                    "hyperServices is null");
+                        LogSubCategory.LifeCycle.HYPER_SDK,
+                        LogLevel.ERROR,
+                        SDK_TRACKER_LABEL,
+                        "onActivityResult",
+                        "hyperServices is null");
                 return;
             }
 
@@ -423,7 +423,8 @@ public class HyperSDKPlugin extends CordovaPlugin {
      * activity internally.
      */
     private static class RequestPermissionsResultDelegate {
-        @NonNull private WeakReference<HyperServices> hyperServicesHolder = new WeakReference<>(null);
+        @NonNull
+        private WeakReference<HyperServices> hyperServicesHolder = new WeakReference<>(null);
 
         synchronized void set(@NonNull HyperServices hyperServices) {
             this.hyperServicesHolder = new WeakReference<>(hyperServices);
@@ -434,11 +435,11 @@ public class HyperSDKPlugin extends CordovaPlugin {
 
             if (hyperServices == null) {
                 SdkTracker.trackBootLifecycle(
-                    PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                    PaymentConstants.LogLevel.ERROR,
-                    SDK_TRACKER_LABEL,
-                    "onRequestPermissionsResult",
-                    "hyperServices is null");
+                        LogSubCategory.LifeCycle.HYPER_SDK,
+                        LogLevel.ERROR,
+                        SDK_TRACKER_LABEL,
+                        "onRequestPermissionsResult",
+                        "hyperServices is null");
                 return;
             }
 

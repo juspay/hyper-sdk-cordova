@@ -8,8 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import in.juspay.hyper.constants.LogLevel;
+import in.juspay.hyper.constants.LogSubCategory;
 import in.juspay.hypersdk.HyperSDKPlugin;
-import in.juspay.hypersdk.core.PaymentConstants;
 import in.juspay.hypersdk.core.SdkTracker;
 
 public class ProcessActivity extends AppCompatActivity {
@@ -28,8 +29,8 @@ public class ProcessActivity extends AppCompatActivity {
             });
         } catch (JSONException e) {
             SdkTracker.trackAndLogBootException(
-                    PaymentConstants.SubCategory.LifeCycle.HYPER_SDK,
-                    PaymentConstants.LogLevel.ERROR,
+                    LogSubCategory.LifeCycle.HYPER_SDK,
+                    LogLevel.ERROR,
                     HyperSDKPlugin.SDK_TRACKER_LABEL,
                     "process",
                     "error while parsing string to JSON",
