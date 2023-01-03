@@ -11,7 +11,7 @@ allprojects {
 }
 
 dependencies {
-  def hyperSDKVersion = "2.1.9"
+  def hyperSDKVersion = "2.1.10"
   implementation ("in.juspay:hypersdk:$hyperSDKVersion") {
     exclude group: "in.juspay", module: "visa-sensory-branding"
   }
