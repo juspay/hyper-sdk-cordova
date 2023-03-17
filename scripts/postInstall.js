@@ -69,27 +69,28 @@ const utilities = {
 // context will help to get the path of files
 module.exports = (context) => {
 
-    // Storing the path of build.gradle & repositories.gradle where changes need to be pushed!!
-    let gradlePath = context.opts.projectRoot + '/platforms/android/build.gradle';
-    let repositoryGradlePath = context.opts.projectRoot + '/platforms/android/repositories.gradle';
+    // Write on the rootGradlePath and replaces it with gradle
+    let rootGradlePath = context.opts.projectRoot + '/platforms/android/build.gradle';
+    var rootGradleString = fs.readFileSync(rootGradlePath).toString();
 
-    // Read the data and dataRepository and convert into string
-    var data = fs.readFileSync(gradlePath).toString();
-    var dataRepository = fs.readFileSync(repositoryGradlePath).toString();
+    let pluginClassPath = `classpath "in.juspay:hypersdk.plugin:2.0.1"`;
+    let clientIdExt = `ext {\n\t\tclientId = "<clientId shared by Juspay team>"\n\t}\n`;
+    let finalString = (clientIdExt + '\tdependencies {\n\t\t' + pluginClassPath).replace(/\t/g, '    ')
+    rootGradleString = rootGradleString.replace('dependencies {', finalString);
 
-    // At the specified path whenever you find the gradle or maven replace it.
-    let gradle = `classpath "in.juspay:hypersdk-asset-plugin:1.0.4" `;
-    let maven = `maven { url "https://maven.juspay.in/jp-build-packages/hypersdk-asset-download/releases/" } `;
-    data = data.replace("dependencies {", "dependencies { \n\t" + gradle);
-    dataRepository = dataRepository.replace("}", maven + "\n}");
 
-   // Write on the gradlePath and replaces it with gradle
-    fs.writeFile(gradlePath, data, function(err) {
+    fs.writeFile(rootGradlePath, rootGradleString, function(err) {
         if (err) return console.error(err);
     });
 
     // Write on the repositoryGradlePath and replaces it with maven
-    fs.writeFile(repositoryGradlePath, dataRepository, function(err) {
+    let repositoryGradlePath = context.opts.projectRoot + '/platforms/android/repositories.gradle';
+    var repositoryGradleString = fs.readFileSync(repositoryGradlePath).toString();
+
+    let maven = `\tmaven { url "https://maven.juspay.in/jp-build-packages/hyper-sdk/" }\n`.replace(/\t/g, '    ');
+    repositoryGradleString = repositoryGradleString.replace("}", maven + "}");
+
+    fs.writeFile(repositoryGradlePath, repositoryGradleString, function(err) {
         if (err) return console.error(err);
     });
 

@@ -1,20 +1,46 @@
-apply plugin: 'hypersdk-asset-plugin'
+apply plugin: 'hypersdk.plugin'
 
 allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-          url "https://maven.juspay.in/jp-build-packages/hyper-sdk/"
-        }
+        maven { url "https://maven.juspay.in/jp-build-packages/hyper-sdk/" }
     }
 }
 
-dependencies {
-  def hyperSDKVersion = "2.1.11"
-  implementation ("in.juspay:hypersdk:$hyperSDKVersion") {
-    exclude group: "in.juspay", module: "visa-sensory-branding"
-  }
+ext.cdvCompileSdkVersion = 32
+
+static def mostRecentVersion(List<String> versions) {
+    return versions.sort(false) { a, b ->
+        [a, b]*.tokenize('-rc')*.join('')*.tokenize('.')*.collect {
+            it as int
+        }.with { u, v ->
+            [u, v].transpose().findResult { x, y -> x <=> y ?: null } ?: u.size() <=> v.size()
+        }
+    }[-1]
 }
 
-ext.cdvCompileSdkVersion = 32
+static def getHyperSDKVersion(rootProject) {
+    def hyperSdkVersion = '2.1.12'
+    if (!rootProject.hasProperty('hyperSDKVersion')) {
+        return hyperSdkVersion
+    }
+    def rootVersion = rootProject.hyperSDKVersion
+    hyperSdkVersion = mostRecentVersion([rootVersion, hyperSdkVersion])
+    if (hyperSdkVersion != rootVersion) {
+        System.out.println("Ignoring the overriden SDK version present in root build.gradle ($rootVersion), as there is a newer version present in the SDK ($hyperSdkVersion).")
+    }
+    return hyperSdkVersion
+}
+
+static def getClientId(rootProject) {
+    if (!rootProject.hasProperty('clientId')) {
+        throw new GradleException("clientId parameter is required in ext block of root build.gradle")
+    }
+    return rootProject.clientId
+}
+
+hyperSdkPlugin {
+    clientId = getClientId(rootProject)
+    sdkVersion = getHyperSDKVersion(rootProject)
+}

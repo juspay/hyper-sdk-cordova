@@ -3,8 +3,7 @@
 ## Table of Contents
 
 - [About](#about)
-- [Getting Started](#getting_started)
-- [SDK API](#sdk_api)
+- [SDK API](#sdk-api)
 
 ## About
 
@@ -18,7 +17,7 @@ The minimum version of cordova-android supported with HyperSDK is [10.0.0](https
 
 ## Getting the SDK
 
-SDK is available as a node depdendecy via:
+SDK is available as a node dependency via:
 
 ```sh
 cordova plugin add hyper-sdk-plugin
@@ -26,7 +25,27 @@ cordova plugin add hyper-sdk-plugin
 
 ## Updating your clientId
 
+### Android (2.1.x and above)
+
+Update your clientId provided by Juspay Support Team in the ext block of the root(top) build.gradle file present under `platforms/android/build.gradle`.
+
+```groovy
+    ext {
+        clientId = "<clientId provided by Juspay Team>"
+    }
+```
+
+### Android (2.0.x versions) [Deprecated]
+
 Update your clientId provided by Juspay Support Team in the `MerchantConfig.txt` file present under `platforms/android/app/`
+
+```txt
+clientId = <clientId shared by Juspay Team>
+```
+
+### iOS
+
+Update your clientId provided by Juspay Support Team in the `MerchantConfig.txt` file present under `platforms/ios/`
 
 ```txt
 clientId = <clientId shared by Juspay Team>
@@ -35,6 +54,7 @@ clientId = <clientId shared by Juspay Team>
 ## SDK API
 
 Create an instance for HyperSDK cordova plugin by using:
+
 ```javascript
 hyperSDKRef = cordova.plugins.HyperSDKPlugin
 ```
@@ -54,7 +74,7 @@ var payload = {
         "clientId" : "<client_id>"
     }
 }
-hyperSDKRef.preFetch(JSON.stringify({payload}))
+hyperSDKRef.preFetch(JSON.stringify(payload))
 ```
 
 ### Initiate
@@ -110,6 +130,6 @@ hyperSDKRef.process(JSON.stringify(completePayload));
 
 Process payload - All payload ref is available at [HyperSDK process](https://developer.juspay.in/v2.0/docs/process-payload).
 
-# License
+## License
 
-hyper-sdk-plugin (HyperSDK Cordova) is distributed under [AGPL-3.0-only](https://bitbucket.org/juspay/hyper-sdk-cordova/src/release/LICENSE.md).
+hyper-sdk-plugin (HyperSDK Cordova) is distributed under [AGPL-3.0-only](https://bitbucket.org/juspay/hyper-sdk-cordova/src/release/LICENSE.md) license.
