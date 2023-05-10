@@ -1,0 +1,162 @@
+<!--
+/*
+ * Copyright (c) Juspay Technologies.
+ *
+ * This source code is licensed under the AGPL 3.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:">
+    <!-- <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="css/index.css">
+    <title>DevTools Cordova</title>
+</head>
+
+<body>
+<div class="app">
+    <h1>Hyper SDK</h1>
+    <div class="formContainer">
+        <button id="preFetch">PreFetch</button>
+        <button id="initiate">Initiate</button><br>
+        <button id="isInitialised">is SDK Initialized</button>
+        <button id="process">Open Payment Page</button><br>
+        <button id="terminate_sdk">Terminate SDK </button><br>
+        <hr>
+        <button id="orderCreate">Order Create</button><br>
+        <h2>OUTPUT</h2>
+        <div type="text" id="outputField">
+        </div>
+        <div class="ecContainer">
+
+            <h2><b>Refresh Wallet Balances</b></h2>
+            <button id="refreshWalletBalances">REFRESH WALLET BALANCES</button><br>
+
+            <h2><b>Net Banking</b></h2>
+            <input type="text" id="bankCode" placeholder="Bank Code"><br>
+            <button id="nbTxn">PAY</button><br>
+            
+            <h2><b>Create Wallet</b></h2>
+            <input type="text" id="cwWalletName" placeholder="Wallet Name"><br>
+            <button id="createWallet">CREATE</button><br>
+            
+            <button id="cardList">CARD LIST</button><br>
+
+            <button id="listWallets">LIST WALLETS</button><br>
+
+            <h2><b>Link Wallet</b></h2>
+            <input type="text" id="lwOtp" placeholder="Enter OTP"><br>
+            <input type="text" id="lwWalletId" placeholder="Wallet Id"><br>
+            <input type="text" id="lwWalletName" placeholder="Wallet Name"><br>
+            <button id="linkWallet">LINK WALLET</button><br>
+            
+            <h2><b>Wallet Redirection</b></h2>
+            <input type="text" id="wdWalletName" placeholder="Wallet Name"><br>
+            <button id="walletRedirect">PAY</button><br>
+            
+            <h2><b>Wallet Direct Debit</b></h2>
+            <input type="text" id="wdDirectWalletName" placeholder="Wallet Name"><br>
+            <input type="text" id="wdWalletDirectToken" placeholder="Wallet Direct Token"><br>
+            <button id="walletDirectDebit">PAY</button><br>
+            
+            <h2><b>Wallet SDK Debit</b></h2>
+            <input type="text" id="wdSdkWalletName" placeholder="Wallet Name"><br>
+            <input type="text" id="wdSdkPresent" placeholder="SDK Present"><br>
+            <!-- <input type="text" id="wdMobileNumber" placeholder="Mobile Number for Google Pay"><br> -->
+            <button id="walletSDKDebit">PAY</button><br>
+            
+            
+            <h2><b>Upi Payment - Collect</b></h2>
+            <input type="text" id="upCustVpa" placeholder="Customer vpa for UPI Collect"><br>
+            <button id="upiCollect">PAY</button><br>
+
+            <h2><b>Upi Payment - Intent</b></h2>
+            <input type="text" id="upPayWithApp" placeholder="Pay with app (package name of upi app)"><br>
+            <button id="upiIntent">PAY</button><br>
+
+            <h2><b>Generic Upi Intent Page</b></h2>
+            <button id="genericUpiIntent">PAY</button><br>
+            
+            <button id="getPaymentMethods">GET PAYMENT METHODS</button><br>
+            <button id="getPaymentSource">GET PAYMENT SOURCE</button><br>
+            <button id="getUpiApps">GET UPI APPS</button><br>
+            
+            <h2><b>Is Device Ready</b></h2>
+            <input type="text" id="idrSdkPresent" placeholder="Sdk Present Ex: ANDROID_GOOGLEPAY"><br>
+            <button id="isDeviceReady">IS READY?</button><br>
+            
+            <h2><b>Delink Wallet</b></h2>
+            <input type="text" id="dwWalletName" placeholder="Wallet Name"><br>
+            <input type="text" id="dwWalletId" placeholder="Wallet Id"><br>
+            <button id="delinkWallet">DELINK WALLET</button><br>
+            
+            <h2><b>Refresh Wallet</b></h2>
+            <input type="text" id="rwWalletName" placeholder="Wallet Name"><br>
+            <input type="text" id="rwWalletId" placeholder="Wallet Id"><br>
+            <button id="refreshWallet">REFRESH WALLET</button><br>
+            
+            <h2><b>Delete Card</b></h2>
+            <input type="text" id="dcCardToken" placeholder="Card Token"><br>
+            <button id="deleteCard">DELETE CARD</button><br>
+            
+
+            <h2><b>New Card</b></h2>
+            <input type="text" id="ctCardNumber" placeholder="Card Number(Regular Card)"><br>
+            <input type="text" id="ctExpiryMonth" placeholder="Expiry Month(Regular Card)"><br>
+            <input type="text" id="ctExpiryYear" placeholder="Expiry Year(Regular Card)"><br>
+            <input type="text" id="ctCvv" placeholder="CVV"><br>
+            <!-- <input type="text" id="ctCardType" placeholder="Card Type Ex: Visa (Regular Card)"><br> -->
+            <!-- <input type="text" id="ctAuthType" placeholder="Auth Type (atm redirect and seamless)"><br> -->
+            <!-- <input type="text" id="ctIsEmi" placeholder="IS EMI Ex:- true"><br>
+            <input type="text" id="ctEmiBank" placeholder="Emi Bank Ex: HDFC"><br>
+            <input type="text" id="ctEmiTenure" placeholder="Emi Tenure Ex:3"><br> -->
+            <input type="text" id="ctSaveForFuture" placeholder="Save for future Ex: true"><br>
+            <button id="newCardTxn">PAY</button><br>
+
+            
+            <h2><b>Saved Card</b></h2>
+            <input type="text" id="ctCardToken" placeholder="Card Token(Stored Card)"><br>
+            <input type="text" id="ctSavedCvv" placeholder="CVV"><br>
+            <!-- <input type="text" id="ctAuthType" placeholder="Auth Type (atm redirect and seamless)"><br> -->
+            <!-- <input type="text" id="ctCardType" placeholder="Card Type Ex: Visa (Regular Card)"><br> -->
+            <!-- <input type="text" id="ctIsEmi" placeholder="IS EMI Ex:- true"><br>
+            <input type="text" id="ctEmiBank" placeholder="Emi Bank Ex: HDFC"><br>
+            <input type="text" id="ctEmiTenure" placeholder="Emi Tenure Ex:3"><br> -->
+            <button id="savedCardTxn">PAY</button>
+
+        </div>
+
+    </div>
+</div>
+<div class="bg" id="loaderDIV">
+    <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>
+<script src="cordova.js"></script>
+<script type="module" src="js/index.js" ></script>
+</body>
+
+</html>

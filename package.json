@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://bitbucket.org/juspay/hyper-sdk-cordova.git"
+    "url": "git+https://github.com/juspay/hyper-sdk-cordova.git"
   },
   "keywords": [
     "ecosystem:cordova",
@@ -27,7 +27,7 @@
   ],
   "author": "Juspay Technologies PVT LTD",
   "license": "AGPL-3.0-only",
-  "homepage": "https://bitbucket.org/juspay/hyper-sdk-cordova#readme",
+  "homepage": "https://github.com/juspay/hyper-sdk-cordova#readme",
   "devDependencies": {
     "release-it": "^15.9.0"
   },

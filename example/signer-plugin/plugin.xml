@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="signer-plugin" version="2.0.0"
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <name>SignerPlugin</name>
+    <description>A Cordova plugin for the HyperSDK</description>
+    
+    <js-module name="SignerPlugin" src="www/signer.js">
+        <clobbers target="cordova.plugins.SignerPlugin" />
+    </js-module>
+    
+    <platform name="android">
+        <config-file parent="/*" target="config.xml">
+            <feature name="SignerPlugin">
+                <param name="android-package" value="in.juspay.signer.SignerPlugin" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.READ_SMS" />
+            <uses-permission android:name="android.permission.RECEIVE_SMS" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+        </config-file>
+        <source-file src="src/android/SignerPlugin.java" target-dir="src/in/juspay/signer/" />
+        <framework custom="true" src="src/android/plugin.gradle" type="gradleReference"/>
+    </platform>
+    
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="SignerPlugin">
+                <param name="ios-package" value="SignerPlugin" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/SignerPlugin.m" />
+    </platform>
+</plugin>
