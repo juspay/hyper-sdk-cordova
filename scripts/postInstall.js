@@ -80,7 +80,7 @@ module.exports = (context) => {
     let rootGradlePath = context.opts.projectRoot + '/platforms/android/build.gradle';
     var rootGradleString = fs.readFileSync(rootGradlePath).toString();
 
-    let pluginClassPath = `classpath "in.juspay:hypersdk.plugin:2.0.2"`;
+    let pluginClassPath = `classpath "in.juspay:hypersdk.plugin:2.0.4"`;
     let clientIdExt = `ext {\n\t\tclientId = "<clientId shared by Juspay team>"\n\t}\n`;
     let finalString = (clientIdExt + '\tdependencies {\n\t\t' + pluginClassPath).replace(/\t/g, '    ')
     rootGradleString = rootGradleString.replace('dependencies {', finalString);
