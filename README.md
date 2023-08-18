@@ -130,6 +130,16 @@ hyperSDKRef.process(JSON.stringify(completePayload));
 
 Process payload - All payload ref is available at [HyperSDK process](https://developer.juspay.in/v2.0/docs/process-payload).
 
+### Optional: isInitialised
+
+This is a helper / optional method to check whether SDK has been initialised after [step-2](#step-2-initiate). It returns a `boolean` value in the callback function.
+
+```javascript
+hyperSDKRef.isInitialised((response) => {
+    // Make process call here if response is true
+});
+```
+
 ## License
 
 hyper-sdk-plugin (HyperSDK Cordova) is distributed under [AGPL-3.0-only](https://github.com/juspay/hyper-sdk-cordova/src/release/LICENSE.md) license.
