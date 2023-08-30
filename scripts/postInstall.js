@@ -69,6 +69,65 @@ const utilities = {
         }
 
         return androidPath;
+    },
+
+    updateClientProject: function(context, packageName) {
+        const packagePath = packageName.replace(/\./g, "/");
+        // HyperActivity
+        const hyperActivityInputPath = utilities.getAndroidSourcePath(context) + "/in/juspay/hypersdk/HyperActivity.java";
+        const hyperActivityOutputPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/HyperActivity.java';
+
+        // Replacing packageName in HyperActivity with app's packageName and writing it to the merchant's packagePath
+        let hyperActivityCode = fs.readFileSync(hyperActivityInputPath).toString();
+        hyperActivityCode = hyperActivityCode.replace(/\$\{mypackage\}/g, packageName);
+        fs.writeFile(hyperActivityOutputPath, hyperActivityCode, function (err) {
+            if (err) return console.error(err);
+        });
+
+        // deleting the old HyperActivity
+        fs.unlink(hyperActivityInputPath, function (err) {
+            if (err) return console.error(err);
+        });
+
+        // ProcessActivity
+        const processActivityInputPath = utilities.getAndroidSourcePath(context) + "/in/juspay/hypersdk/ProcessActivity.java";
+        const processActivityOutputPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/ProcessActivity.java';
+
+        // Replacing packageName in ProcessActivity with app's packageName and writing it to the merchant's packagePath
+        let processActivityCode = fs.readFileSync(processActivityInputPath).toString();
+        processActivityCode = processActivityCode.replace(/\$\{mypackage\}/g, packageName);
+        fs.writeFile(processActivityOutputPath, processActivityCode, function (err) {
+            if (err) return console.error(err);
+        });
+
+        // deleting the old ProcessActivity
+        fs.unlink(processActivityInputPath, function (err) {
+            if (err) return console.error(err);
+        });
+
+
+        // Replacing packageName in HyperSDKPlugin with app's packageName
+        const hyperSdkPluginPath = utilities.getAndroidSourcePath(context) +"/in/juspay/hypersdk/HyperSDKPlugin.java";
+        let hyperSdkPluginCode = fs.readFileSync(hyperSdkPluginPath).toString();
+        hyperSdkPluginCode = hyperSdkPluginCode.replace(/\$\{mypackage\}/g, packageName);
+        fs.writeFileSync(hyperSdkPluginPath, hyperSdkPluginCode, function (err) {
+            if (err) return console.error(err);
+        });
+
+        // Add the Complete path to the MainActivity
+        const mainActivityPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/MainActivity.java';
+
+        // will replace FragmentActivity with our HyperActivity.
+        let mainActivityCode = fs.readFileSync(mainActivityPath).toString();
+        const newSuperClass = "extends HyperActivity";
+        mainActivityCode = mainActivityCode.replace("extends CordovaActivity", newSuperClass);
+
+
+        // This will add 'in.juspay.hypersdk.HyperActivity' into our MainActivity
+        // so that HyperActivity.java could be accessed directly.
+        fs.writeFile(mainActivityPath, mainActivityCode, function(err) {
+            if (err) return console.error(err);
+        });
     }
 };
 
@@ -108,75 +167,33 @@ module.exports = (context) => {
         const parseString = xml2js.parseString;
         const manifestPath = androidManifestPath + '/AndroidManifest.xml';
         const androidManifest = fs.readFileSync(manifestPath).toString();
-
+        const configFilePath = context.opts.projectRoot + '/config.xml';
         if (androidManifest) {
             parseString(androidManifest, (err, manifest) => {
 
-                if (err) return console.error(err);
+                if (err) return console.error('Error parsing AndroidManifest', err);
 
                 // Getting the package name from the manifest
-                const packageName = manifest['manifest']['$']['package']
-                const packagePath = packageName.replace(/\./g, "/");
-
-                // HyperActivity
-                const hyperActivityInputPath = utilities.getAndroidSourcePath(context) + "/in/juspay/hypersdk/HyperActivity.java";
-                const hyperActivityOutputPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/HyperActivity.java';
-
-                // Replacing packageName in HyperActivity with app's packageName and writing it to the merchant's packagePath
-                let hyperActivityCode = fs.readFileSync(hyperActivityInputPath).toString();
-                hyperActivityCode = hyperActivityCode.replace(/\$\{mypackage\}/g, packageName);
-                fs.writeFile(hyperActivityOutputPath, hyperActivityCode, function (err) {
-                    if (err) return console.error(err);
-                });
-
-                // deleting the old HyperActivity
-                fs.unlink(hyperActivityInputPath, function (err) {
-                    if (err) return console.error(err);
-                });
-
-                // ProcessActivity
-                const processActivityInputPath = utilities.getAndroidSourcePath(context) + "/in/juspay/hypersdk/ProcessActivity.java";
-                const processActivityOutputPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/ProcessActivity.java';
-
-                // Replacing packageName in ProcessActivity with app's packageName and writing it to the merchant's packagePath
-                let processActivityCode = fs.readFileSync(processActivityInputPath).toString();
-                processActivityCode = processActivityCode.replace(/\$\{mypackage\}/g, packageName);
-                fs.writeFile(processActivityOutputPath, processActivityCode, function (err) {
-                    if (err) return console.error(err);
-                });
-
-                // deleting the old ProcessActivity
-                fs.unlink(processActivityInputPath, function (err) {
-                    if (err) return console.error(err);
-                });
-
-
-                // Replacing packageName in HyperSDKPlugin with app's packageName
-                const hyperSdkPluginPath = utilities.getAndroidSourcePath(context) +"/in/juspay/hypersdk/HyperSDKPlugin.java";
-                let hyperSdkPluginCode = fs.readFileSync(hyperSdkPluginPath).toString();
-                hyperSdkPluginCode = hyperSdkPluginCode.replace(/\$\{mypackage\}/g, packageName);
-                fs.writeFileSync(hyperSdkPluginPath, hyperSdkPluginCode, function (err) {
-                    if (err) return console.error(err);
-                });
-
-                // Add the Complete path to the MainActivity
-                const mainActivityPath = utilities.getAndroidSourcePath(context) + "/" + packagePath + '/MainActivity.java';
-
-                // will replace FragmentActivity with our HyperActivity.
-                let mainActivityCode = fs.readFileSync(mainActivityPath).toString();
-                const newSuperClass = "extends HyperActivity";
-                mainActivityCode = mainActivityCode.replace("extends CordovaActivity", newSuperClass);
-
-
-                // This will add 'in.juspay.hypersdk.HyperActivity' into our MainActivity
-                // so that HyperActivity.java could be accessed directly.
-                fs.writeFile(mainActivityPath, mainActivityCode, function(err) {
-                    if (err) return console.error(err);
-                });
-
+                let packageName = manifest['manifest']['$']['package']
+                if (!packageName) {
+                    let configXmlData = fs.readFileSync(configFilePath).toString();
+                    xml2js.parseString(configXmlData, (error, configData) => {
+                      if (error) {
+                          return console.error('Error parsing config.xml:', error);
+                      }
+                      const widget = configData.widget;
+                      if (widget && widget.$ && widget.$.id) {
+                          const idAttributeValue = widget.$.id;
+                          packageName = idAttributeValue.trim();
+                          utilities.updateClientProject(context, packageName);
+                      } else {
+                          return console.error('Widget element or id attribute not found.');
+                      }
+                    });
+                } else {
+                    utilities.updateClientProject(context, packageName);
+                }
             })
-
         }
-
     }
 }

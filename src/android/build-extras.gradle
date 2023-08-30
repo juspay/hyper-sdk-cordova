@@ -8,8 +8,6 @@ allprojects {
     }
 }
 
-ext.cdvCompileSdkVersion = 32
-
 static def mostRecentVersion(List<String> versions) {
     return versions.sort(false) { a, b ->
         [a, b]*.tokenize('-rc')*.join('')*.tokenize('.')*.collect {
