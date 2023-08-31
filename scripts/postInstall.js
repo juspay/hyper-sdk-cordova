@@ -171,7 +171,7 @@ module.exports = (context) => {
         if (androidManifest) {
             parseString(androidManifest, (err, manifest) => {
 
-                if (err) return console.error('Error parsing AndroidManifest', err);
+                if (err) throw new Error('Error parsing AndroidManifest', err);
 
                 // Getting the package name from the manifest
                 let packageName = manifest['manifest']['$']['package']
@@ -179,15 +179,19 @@ module.exports = (context) => {
                     let configXmlData = fs.readFileSync(configFilePath).toString();
                     xml2js.parseString(configXmlData, (error, configData) => {
                       if (error) {
-                          return console.error('Error parsing config.xml:', error);
+                          throw new Error('Error parsing config.xml:', error);
                       }
                       const widget = configData.widget;
-                      if (widget && widget.$ && widget.$.id) {
-                          const idAttributeValue = widget.$.id;
-                          packageName = idAttributeValue.trim();
-                          utilities.updateClientProject(context, packageName);
+                      if (widget && widget.$) {
+                        const androidPackageName = widget.$['android-packageName'];
+                        const idAttributeValue = widget.$.id;
+                        packageName = androidPackageName || idAttributeValue;
+                        if (!packageName) {
+                            throw new Error("Could not fetch packageName from config.xml, please add id or android-packageName in widget element of config.xml");
+                        }
+                        utilities.updateClientProject(context, packageName);
                       } else {
-                          return console.error('Widget element or id attribute not found.');
+                        throw new Error('Widget element not found in config.xml');
                       }
                     });
                 } else {
