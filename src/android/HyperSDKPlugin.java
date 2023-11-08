@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import in.juspay.hyper.constants.LogLevel;
 import in.juspay.hyper.constants.LogSubCategory;
+import in.juspay.hypercheckoutlite.HyperCheckoutLite;
 import in.juspay.hypersdk.core.SdkTracker;
 import in.juspay.hypersdk.data.JuspayResponseHandler;
 import in.juspay.hypersdk.ui.HyperPaymentsCallbackAdapter;
@@ -44,6 +45,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     private final static String LOG_TAG = "HYPERSDK_CORDOVA_PLUGIN";
 
     private static final String INITIATE = "initiate";
+    private static final String OPENPAYMENTPAGE = "openPaymentPage";
     private static final String PROCESS = "process";
     private static final String PREFETCH = "prefetch";
     private static final String isINITIALISED = "isInitialised";
@@ -60,6 +62,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
      * concurrency issues.
      */
     private static final Object lock = new Object();
+    private static boolean isHyperCheckoutLiteInteg = false;
     private static final RequestPermissionsResultDelegate requestPermissionsResultDelegate = new RequestPermissionsResultDelegate();
 
     public static CordovaInterface cordova = null;
@@ -137,6 +140,15 @@ public class HyperSDKPlugin extends CordovaPlugin {
             return true;
         }
 
+        if(OPENPAYMENTPAGE.equalsIgnoreCase(action)) {
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    openPaymentPage(args);
+                }
+            });
+            return true;
+        }
+
         if (PROCESS.equalsIgnoreCase(action)) {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
@@ -188,6 +200,34 @@ public class HyperSDKPlugin extends CordovaPlugin {
             sendJSCallback(PluginResult.Status.OK, "success");
         } catch (Exception e) {
             sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
+        }
+    }
+
+    private void openPaymentPage(JSONArray args) {
+        synchronized (lock) {
+            try {
+                isHyperCheckoutLiteInteg = true;
+                FragmentActivity activity = (FragmentActivity) cordova.getActivity();
+                if (activity == null) {
+                    SdkTracker.trackBootLifecycle(
+                        LogSubCategory.LifeCycle.HYPER_SDK,
+                        LogLevel.ERROR,
+                        SDK_TRACKER_LABEL,
+                        "initiate",
+                        "activity is null"
+                    );
+                    return;
+                }
+                String params = String.valueOf(args.get(0));
+                JSONObject payloadParams = new JSONObject(params);
+                if (isPPMerchant(payloadParams)) {
+                    Intent i = new Intent(activity, ProcessActivity.class);
+                    i.putExtra(PROCESS_PAYLOAD_ARG, params);
+                    activity.startActivity(i);
+                }
+            }catch (Exception e) {
+                sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
+            }
         }
     }
 
@@ -280,19 +320,38 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     public static void processWithActivity(FragmentActivity activity, JSONObject params, ProcessCallback processCallback) {
-        if (hyperServices == null) {
-            SdkTracker.trackBootLifecycle(
-                    LogSubCategory.LifeCycle.HYPER_SDK,
-                    LogLevel.ERROR,
-                    SDK_TRACKER_LABEL,
-                    "process",
-                    "hyperServices is null");
-            return;
-        }
         HyperSDKPlugin.processCallback = processCallback;
+        if(isHyperCheckoutLiteInteg){
+            HyperCheckoutLite.openPaymentPage(activity, params, new HyperPaymentsCallbackAdapter() {
+                    @Override
+                    public void onEvent(JSONObject data, JuspayResponseHandler juspayResponseHandler) {
+                        Log.d("Callback onEvent", data.toString());
+                        if (isPPMerchant(params) && "process_result".equals(data.optString("event"))) {
+                            isProcessActive.set(false);
+                            processPayload = null;
+                            processCallback.onResult();
+                        }
 
-        hyperServices.process(activity, params);
-
+                        try {
+                            sendJSCallback(PluginResult.Status.OK, data.toString());
+                        } catch (Exception e) {
+                            sendJSCallback(PluginResult.Status.ERROR, e.getMessage());
+                        }
+                    }
+                });
+        }else {
+            if (hyperServices == null) {
+                SdkTracker.trackBootLifecycle(
+                        LogSubCategory.LifeCycle.HYPER_SDK,
+                        LogLevel.ERROR,
+                        SDK_TRACKER_LABEL,
+                        "process",
+                        "hyperServices is null");
+                return;
+            }
+            hyperServices.process(activity, params);
+            
+        }
         isProcessActive.set(true);
         processPayload = params;
     }
@@ -353,7 +412,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
     }
 
     public static boolean onBackPressed() {
-        return hyperServices != null && hyperServices.onBackPressed();
+        return isHyperCheckoutLiteInteg ? HyperCheckoutLite.onBackPressed() : hyperServices != null && hyperServices.onBackPressed();
     }
 
     public static void resetActivity(FragmentActivity activity) {
@@ -375,7 +434,7 @@ public class HyperSDKPlugin extends CordovaPlugin {
      */
     public void onBackPressed(final JSONArray args, final CallbackContext callbackContext) {
         try {
-            boolean backPressHandled = hyperServices.onBackPressed();
+            boolean backPressHandled = isHyperCheckoutLiteInteg ? HyperCheckoutLite.onBackPressed() : hyperServices.onBackPressed();
             PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, backPressHandled ? "true" : "false");
             callbackContext.sendPluginResult(pluginResult);
         } catch (Exception e) {

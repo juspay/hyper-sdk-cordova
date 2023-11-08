@@ -19,7 +19,7 @@ static def mostRecentVersion(List<String> versions) {
 }
 
 static def getHyperSDKVersion(rootProject) {
-    def hyperSdkVersion = '2.1.13'
+    def hyperSdkVersion = '2.1.20-rc.06'
     if (!rootProject.hasProperty('hyperSDKVersion')) {
         return hyperSdkVersion
     }
@@ -38,7 +38,13 @@ static def getClientId(rootProject) {
     return rootProject.clientId
 }
 
+def hyperSDKVersion = getHyperSDKVersion(rootProject)
+
+dependencies {
+  compileOnly "in.juspay:hypercheckoutlite:$hyperSDKVersion"
+}
+
 hyperSdkPlugin {
     clientId = getClientId(rootProject)
-    sdkVersion = getHyperSDKVersion(rootProject)
+    sdkVersion = hyperSDKVersion
 }

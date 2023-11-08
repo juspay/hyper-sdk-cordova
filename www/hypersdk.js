@@ -40,5 +40,8 @@ module.exports = {
     },
     isInitialised: function (callback) {
         callNative("isInitialised", {}, callback);
-    }
+    },
+    openPaymentPage: function (payload, callback) {
+        callNative("openPaymentPage", payload, callback);
+    },
 }
