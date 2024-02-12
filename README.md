@@ -25,7 +25,7 @@ cordova plugin add hyper-sdk-plugin
 
 ## Updating your clientId
 
-### Android (3.0.0 and above)
+### Android
 
 Update your clientId provided by Juspay Support Team in the ext block of the root(top) build.gradle file present under `platforms/android/build.gradle`.
 
@@ -36,13 +36,8 @@ Update your clientId provided by Juspay Support Team in the ext block of the roo
     }
 ```
 
-### Android (2.0.x versions) [Deprecated]
+Optionally, you can also provide an override for base SDK version present in plugin (the newer version among both would be considered).
 
-Update your clientId provided by Juspay Support Team in the `MerchantConfig.txt` file present under `platforms/android/app/`
-
-```txt
-clientId = <clientId shared by Juspay Team>
-```
 
 ### iOS
 
