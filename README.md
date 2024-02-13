@@ -32,7 +32,7 @@ Update your clientId provided by Juspay Support Team in the ext block of the roo
 ```groovy
     ext {
         clientId = "<clientId provided by Juspay Team>"
-        hyperSDKVersion = "2.1.23"
+        hyperSDKVersion = "2.1.24"
     }
 ```
 
