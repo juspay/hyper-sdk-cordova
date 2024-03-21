@@ -1,6 +1,6 @@
 {
   "name": "hyper-sdk-plugin",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "description": "Cordova plugin for HyperSDK which enables payment orchestration via different dynamic modules. More details available at https://developer.juspay.in/v2.0/docs/introduction . Some part of module depends heavily on native functionalities and are not updatable dynamically.",
   "scripts": {
     "release": "release-it"

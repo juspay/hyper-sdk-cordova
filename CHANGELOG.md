@@ -1,4 +1,13 @@
+# Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [3.0.11](https://github.com/juspay/hyper-sdk-cordova/compare/v3.0.10...v3.0.11) (2024-03-21)
+
+
+### Features
+
+* added github workflows ([acce60c](https://github.com/juspay/hyper-sdk-cordova/commit/acce60c50f764cf0decd62e4249866b831e2e004))
 
 ## [3.0.6](https://github.com/juspay/hyper-sdk-cordova/compare/v3.0.5...v3.0.6) (2023-11-16)
 
@@ -61,6 +70,3 @@
 
 
 # 2.1.0 (2023-03-24)
-
-
-
