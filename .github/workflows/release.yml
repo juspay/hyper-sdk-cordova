@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint Check
+        run: num run lint
+        
       - name: Determine release type
         id: determine-release
         run: |
