@@ -28,3 +28,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Lint Check
+        run: num run lint

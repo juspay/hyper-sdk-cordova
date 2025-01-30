@@ -3,7 +3,8 @@
   "version": "3.0.15",
   "description": "Cordova plugin for HyperSDK which enables payment orchestration via different dynamic modules. More details available at https://developer.juspay.in/v2.0/docs/introduction . Some part of module depends heavily on native functionalities and are not updatable dynamically.",
   "scripts": {
-    "release": "release-it"
+    "release": "release-it",
+    "lint": "npx eslint \"www/**/*.js\" && cd example && npm run lint"
   },
   "cordova": {
     "id": "hyper-sdk-plugin",
@@ -29,6 +30,7 @@
   "license": "AGPL-3.0-only",
   "homepage": "https://github.com/juspay/hyper-sdk-cordova#readme",
   "devDependencies": {
+    "eslint": "^8.57.1",
     "release-it": "^16.2.1"
   },
   "release-it": {
