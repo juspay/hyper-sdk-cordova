@@ -29,7 +29,7 @@
   "license": "AGPL-3.0-only",
   "homepage": "https://github.com/juspay/hyper-sdk-cordova#readme",
   "devDependencies": {
-    "release-it": "^16.2.1"
+    "release-it": "^19.0.4"
   },
   "release-it": {
     "git": {
