@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.21](https://github.com/juspay/hyper-sdk-cordova/compare/v3.0.20...v3.0.21) (2026-07-03)
+
+
+### Bug Fixes
+
+* update uuid transitive dependency to >=11.1.1 to fix GHSA-w5hq-g745-h8pq ([c1f4767](https://github.com/juspay/hyper-sdk-cordova/commit/c1f47677349bb20f6776edfc212f94df97aa41c9))
+
 ### [3.0.20](https://github.com/juspay/hyper-sdk-cordova/compare/v3.0.19...v3.0.20) (2026-06-18)
 
 
