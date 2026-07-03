@@ -1,15 +1,15 @@
 # HyperSDK Cordova plugin
 
-.
 Cordova plugin for HyperSDK which enables payment orchestration via different dynamic modules. More details available at Juspay Developer Docs for [Express Checkout SDK](https://docs.juspay.in/ec-headless/cordova/base-sdk-integration/getting-sdk) and [Payment Page SDK](https://docs.juspay.in/hyper-checkout/cordova/overview/integration-architecture/). Some part of module depends heavily on native functionalities are not updatable dynamically.
 
 ## Minimum Requirement
 
-### Android
+### ANDROID
 
 The minimum version of cordova-android supported with HyperSDK is [10.0.0](https://github.com/apache/cordova-android/blob/master/RELEASENOTES.md#1000-jul-17-2021) which uses `androidx` and `AppCompatActivity`.
 
 ### IOS
+
 Latest versions of HyperSDK supports IOS Version 12 and Above.
 Check [Release Notes](https://docs.juspay.in/resources/docs/sdk--release-notes/ios--release-notes) for more information.
 
@@ -36,7 +36,6 @@ ext {
 
 Optionally, you can also provide an override for base SDK version present in plugin (the newer version among both would be considered).
 
-
 ### iOS
 
 Update your clientId provided by Juspay Support Team in the `MerchantConfig.txt` file present under `platforms/ios/`
@@ -60,13 +59,15 @@ end
 
 ## SDK APIs
 
+### Step-1
+
 Create an instance for HyperSDK cordova plugin by using:
 
 ```javascript
 hyperSDKRef = cordova.plugins.HyperSDKPlugin
 ```
 
-### Initiate
+### Step-2: Initiate
 
 This method should be called on the render of the host screen. This will boot up the SDK and start the Hyper engine. It takes a `stringified JSON` as its argument which will contain the base parameters for the entire session and remains static throughout one SDK instance lifetime.
 
@@ -127,7 +128,7 @@ var hyperSDKCallback = function (response) {
 Payment Page - All payload ref is available at [HyperSDK Payment page doc](https://docs.juspay.in/hyper-checkout/cordova/overview/integration-architecture/).
 EC Headless - All payload ref is available at [HyperSDK EC doc](https://docs.juspay.in/ec-headless/cordova/base-sdk-integration/getting-sdk).
 
-### Process
+### Step-3: Process
 
 Process api helps with all the required operation to be triggered via HyperSDK.
 Responses and various events triggered are streamed back to callback passed in Initiate.
