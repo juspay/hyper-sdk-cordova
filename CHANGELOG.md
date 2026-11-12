@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.22](https://github.com/juspay/hyper-sdk-cordova/compare/v3.0.21...v3.0.22) (2026-11-12)
+
+
+### Bug Fixes
+
+* upgrade @xmldom/xmldom and brace-expansion in the example ([#37](https://github.com/juspay/hyper-sdk-cordova/issues/37)) ([5d90986](https://github.com/juspay/hyper-sdk-cordova/commit/5d909865075a2b2322d61525d745797e84f6b7ff))
+* upgrade brace-expansion to 1.1.18 (CVE-2026-13149) ([#36](https://github.com/juspay/hyper-sdk-cordova/issues/36)) [skip ci] ([0ef7502](https://github.com/juspay/hyper-sdk-cordova/commit/0ef750274f9e502cb94cbf7395dacffde25b680a))
+
 ### [3.0.21](https://github.com/juspay/hyper-sdk-cordova/compare/v3.0.20...v3.0.21) (2026-07-03)
 
 
